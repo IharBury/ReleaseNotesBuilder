@@ -10,83 +10,63 @@ namespace ReleaseNotesBuilder.Tests
     [TestClass]
     public class ArgumentParserTests
     {
+        private static readonly string[] normalArguments =
+        {
+            "--gn=GitHubUser",
+            "--gt=GitHubToken",
+            "--jn=JiraUser",
+            "--jp=JiraPassword",
+            "--rn=Repo",
+            "--bn=Branch",
+            "--tn=Tag",
+            "--tp=XYZ",
+            "--tpn=Template"
+        };
+
+        private Mock<IProgramConfiguration> configurationMock;
+        private ArgumentParser parser;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            configurationMock = new Mock<IProgramConfiguration>
+            {
+                DefaultValue = DefaultValue.Mock
+            };
+            configurationMock.SetupGet(configuration => configuration.NoteCollector.TaskPrefixes).Returns(new List<string>());
+            parser = new ArgumentParser(configurationMock.Object);
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentParsingException))]
         public void WhenNoParametersProvidedExceptionIsThrown()
         {
-            var configurationMock = new Mock<IProgramConfiguration>();
-            var parser = new ArgumentParser(configurationMock.Object);
             parser.Parse(Enumerable.Empty<string>());
         }
 
         [TestMethod]
         public void WhenAllParametersAreProvidedExceptionIsNotThrown()
         {
-            var configurationMock = new Mock<IProgramConfiguration>
-            {
-                DefaultValue = DefaultValue.Mock
-            };
-            var parser = new ArgumentParser(configurationMock.Object);
-            parser.Parse(new[]
-            {
-                "--gn=GitHubUser",
-                "--gt=GitHubToken",
-                "--jn=JiraUser",
-                "--jp=JiraPassword",
-                "--rn=Repo",
-                "--bn=Branch",
-                "--tn=Tag",
-                "--tp=XYZ",
-                "--tpn=Template"
-            });
+            parser.Parse(normalArguments);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentParsingException))]
         public void WhenUniqueParameterIsProvidedTwiceExceptionIsThrown()
         {
-            var configurationMock = new Mock<IProgramConfiguration>
+            parser.Parse(normalArguments.Concat(new[]
             {
-                DefaultValue = DefaultValue.Mock
-            };
-            var parser = new ArgumentParser(configurationMock.Object);
-            parser.Parse(new[]
-            {
-                "--gn=GitHubUser",
-                "--gn=GitHubSuperUser",
-                "--gt=GitHubToken",
-                "--jn=JiraUser",
-                "--jp=JiraPassword",
-                "--rn=Repo",
-                "--bn=Branch",
-                "--tn=Tag",
-                "--tp=XYZ",
-                "--tpn=Template"
-            });
+                "--gn=GitHubSuperUser"
+            }));
         }
 
         [TestMethod]
         public void WhenTaskPrefixIsProvidedTwiceBothAreAddedToTheCollection()
         {
-            var configurationMock = new Mock<IProgramConfiguration>
+            parser.Parse(normalArguments.Concat(new[]
             {
-                DefaultValue = DefaultValue.Mock
-            };
-            configurationMock.SetupGet(configuration => configuration.NoteCollector.TaskPrefixes).Returns(new List<string>());
-            var parser = new ArgumentParser(configurationMock.Object);
-            parser.Parse(new[]
-            {
-                "--gn=GitHubUser",
-                "--gt=GitHubToken",
-                "--jn=JiraUser",
-                "--jp=JiraPassword",
-                "--rn=Repo",
-                "--bn=Branch",
-                "--tn=Tag",
-                "--tp=XYZ",
-                "--tp=ABC",
-                "--tpn=Template"
-            });
+                "--tp=ABC"
+            }));
 
             Assert.IsTrue(configurationMock.Object.NoteCollector.TaskPrefixes.Contains("XYZ"));
             Assert.IsTrue(configurationMock.Object.NoteCollector.TaskPrefixes.Contains("ABC"));
@@ -95,24 +75,15 @@ namespace ReleaseNotesBuilder.Tests
         [TestMethod]
         public void CommaSeparatedTaskPrefixesAreAddedToTheCollection()
         {
-            var configurationMock = new Mock<IProgramConfiguration>
-            {
-                DefaultValue = DefaultValue.Mock
-            };
-            configurationMock.SetupGet(configuration => configuration.NoteCollector.TaskPrefixes).Returns(new List<string>());
-            var parser = new ArgumentParser(configurationMock.Object);
-            parser.Parse(new[]
-            {
-                "--gn=GitHubUser",
-                "--gt=GitHubToken",
-                "--jn=JiraUser",
-                "--jp=JiraPassword",
-                "--rn=Repo",
-                "--bn=Branch",
-                "--tn=Tag",
-                "--tp=XYZ,ABC",
-                "--tpn=Template"
-            });
+            parser.Parse(normalArguments
+                .Except(new[]
+                {
+                    "--tp=XYZ"    
+                })
+                .Concat(new[]
+                {
+                    "--tp=XYZ,ABC"
+                }));
 
             Assert.IsTrue(configurationMock.Object.NoteCollector.TaskPrefixes.Contains("XYZ"));
             Assert.IsTrue(configurationMock.Object.NoteCollector.TaskPrefixes.Contains("ABC"));
@@ -122,24 +93,10 @@ namespace ReleaseNotesBuilder.Tests
         [ExpectedException(typeof(ArgumentParsingException))]
         public void WhenUnknownParametersProvidedExceptionIsThrown()
         {
-            var configurationMock = new Mock<IProgramConfiguration>
+            parser.Parse(normalArguments.Concat(new[]
             {
-                DefaultValue = DefaultValue.Mock
-            };
-            var parser = new ArgumentParser(configurationMock.Object);
-            parser.Parse(new[]
-            {
-                "--gn=GitHubUser",
-                "--gt=GitHubToken",
-                "--jn=JiraUser",
-                "--jp=JiraPassword",
-                "--rn=Repo",
-                "--bn=Branch",
-                "--tn=Tag",
-                "--tp=XYZ",
-                "--tpn=Template",
                 "extra"
-            });
+            }));
         }
     }
 }
