@@ -1,6 +1,6 @@
 ﻿using RestSharp.Deserializers;
 
-namespace ReleaseNotesBuilder.Providers.GitHub.Models
+namespace ReleaseNotesBuilder.GitHub
 {
     public class TagDataModel
     {

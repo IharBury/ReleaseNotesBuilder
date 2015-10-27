@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using ReleaseNotesBuilder.Providers.GitHub.Models;
-
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace ReleaseNotesBuilder.Providers.GitHub
+namespace ReleaseNotesBuilder.GitHub
 {
-    public class GitHub
+    public class GitHubClient
     {
         public string OwnerName { get; set; }
         public string AccessToken { get; set; }

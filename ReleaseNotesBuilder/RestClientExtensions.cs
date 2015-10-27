@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace ReleaseNotesBuilder.Providers.Extensions
+namespace ReleaseNotesBuilder
 {
     public static class RestClientExtensions
     {

@@ -2,7 +2,7 @@
 
 using RestSharp.Deserializers;
 
-namespace ReleaseNotesBuilder.Providers.Jira.Models
+namespace ReleaseNotesBuilder.Jira
 {
     public class TaskDataModel
     {

@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ReleaseNotesBuilder.GitHub;
+using ReleaseNotesBuilder.Jira;
 
-using ReleaseNotesBuilder.Providers.GitHub;
-using ReleaseNotesBuilder.Providers.Jira;
-
-namespace ReleaseNotesBuilder.Builders.Notes
+namespace ReleaseNotesBuilder
 {
-    public class NotesBuilder: INotesBuilder
+    public class NoteCollector: INoteCollector
     {
-        private readonly GitHub gitHub;
-        private readonly Jira jira;
+        private readonly GitHubClient gitHub;
+        private readonly JiraClient jira;
 
-        public NotesBuilder(GitHub gitHub, Jira jira)
+        public NoteCollector(GitHubClient gitHub, JiraClient jira)
         {
             this.gitHub = gitHub;
             this.jira = jira;
@@ -23,7 +22,7 @@ namespace ReleaseNotesBuilder.Builders.Notes
         public string TagName { get; set; }
         public string[] TaskPrefixes { get; set; }
 
-        public List<string> Build()
+        public List<Note> Collect()
         {
             var taskCriteria = TaskPrefixes
                 .Select(x => new Regex(x + "-(\\d){1,}", RegexOptions.Multiline | RegexOptions.IgnoreCase))
@@ -31,7 +30,13 @@ namespace ReleaseNotesBuilder.Builders.Notes
 
             var taskNames = gitHub.GetTaskNamesByCommitDescription(RepositoryName, BranchName, TagName, taskCriteria);
 
-            return taskNames.Select(taskName => string.Format("{0} {1}", taskName, jira.GetTask(taskName).Summary)).ToList();
+            return taskNames
+                .Select(taskName => new Note
+                {
+                    TaskName = taskName,
+                    Summary = jira.GetTask(taskName).Summary
+                })
+                .ToList();
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿@model ReleaseNotesBuilder.Model.ReportModel
+﻿@model ReleaseNotesBuilder.Templates.ReportModel
 
 <ul>
-@foreach(var line in Model.Notes){
-	<li>@line</li>
-}
+    @foreach(var note in Model.Notes)
+    {
+        <li>@note.TaskName @note.Summary</li>
+    }
 </ul>

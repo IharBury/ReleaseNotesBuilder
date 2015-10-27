@@ -1,4 +1,4 @@
-﻿namespace ReleaseNotesBuilder.Providers.GitHub.Models
+﻿namespace ReleaseNotesBuilder.GitHub
 {
     public class LinkedResponsePayload<T>
     {

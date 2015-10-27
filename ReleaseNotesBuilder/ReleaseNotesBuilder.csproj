@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,19 +63,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\Notes\INotesBuilder.cs" />
-    <Compile Include="Builders\TemplateBuilder.cs" />
-    <Compile Include="Builders\Notes\NotesBuilder.cs" />
-    <Compile Include="Model\TemplateEngineModel.cs" />
+    <Compile Include="Arguments\RequiredArgument.cs" />
+    <Compile Include="INoteCollector.cs" />
+    <Compile Include="IProgramConfiguration.cs" />
+    <Compile Include="NoteFormatter.cs" />
+    <Compile Include="Note.cs" />
+    <Compile Include="NoteCollector.cs" />
+    <Compile Include="Arguments\ArgumentParser.cs" />
+    <Compile Include="Arguments\ParameterParsingException.cs" />
+    <Compile Include="Templates\ReportModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\Extensions\RestClientExtensions.cs" />
-    <Compile Include="Providers\GitHub\Models\LinkedResponsePayload.cs" />
-    <Compile Include="Providers\GitHub\GitHub.cs" />
-    <Compile Include="Providers\GitHub\Models\CommitDataModel.cs" />
-    <Compile Include="Providers\GitHub\Models\TagDataModel.cs" />
-    <Compile Include="Providers\Jira\Jira.cs" />
-    <Compile Include="Providers\Jira\Models\TaskDataModel.cs" />
+    <Compile Include="RestClientExtensions.cs" />
+    <Compile Include="GitHub\LinkedResponsePayload.cs" />
+    <Compile Include="GitHub\GitHubClient.cs" />
+    <Compile Include="GitHub\CommitDataModel.cs" />
+    <Compile Include="GitHub\TagDataModel.cs" />
+    <Compile Include="Jira\JiraClient.cs" />
+    <Compile Include="Jira\TaskDataModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

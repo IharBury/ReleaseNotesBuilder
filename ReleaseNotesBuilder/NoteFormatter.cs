@@ -1,29 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
+using ReleaseNotesBuilder.Templates;
 
-using ReleaseNotesBuilder.Builders.Notes;
-using ReleaseNotesBuilder.Model;
-
-namespace ReleaseNotesBuilder.Builders
+namespace ReleaseNotesBuilder
 {
-    public class TemplateBuilder
+    public class NoteFormatter
     {
-        private readonly INotesBuilder notesBuilder;
-
-        public TemplateBuilder(INotesBuilder notesBuilder)
-        {
-            this.notesBuilder = notesBuilder;
-        }
-
         public string TemplateName { get; set; }
 
-        public string Build()
+        public string Format(IEnumerable<Note> notes)
         {
-            var notes = notesBuilder.Build();
             var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates",
                 string.Format("{0}.cshtml", TemplateName));
             var templateBody = File.ReadAllText(templatePath);
@@ -41,7 +32,7 @@ namespace ReleaseNotesBuilder.Builders
 
             return Razor.Parse(templateBody, new ReportModel
             {
-                Notes = notes
+                Notes = notes.ToList()
             });
         }
     }

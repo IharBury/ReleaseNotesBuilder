@@ -1,58 +1,52 @@
 ﻿using System;
-
-using NDesk.Options;
-
-using ReleaseNotesBuilder.Builders;
-using ReleaseNotesBuilder.Builders.Notes;
-using ReleaseNotesBuilder.Providers.GitHub;
-using ReleaseNotesBuilder.Providers.Jira;
+using ReleaseNotesBuilder.Arguments;
+using ReleaseNotesBuilder.GitHub;
+using ReleaseNotesBuilder.Jira;
 
 namespace ReleaseNotesBuilder
 {
-    class Program
+    public class Program : IProgramConfiguration
     {
-
-        static void Main(string[] args)
+        public Program()
         {
-            var jira = new Jira();
-            var gitHub = new GitHub();
-            var notesBuilder = new NotesBuilder(gitHub, jira);
-            var templateBuilder = new TemplateBuilder(notesBuilder);
+            Jira = new JiraClient();
+            GitHub = new GitHubClient();
+            NoteCollector = new NoteCollector(GitHub, Jira);
+            NoteFormatter = new NoteFormatter();
+        }
 
-            var options = new OptionSet
-            {
-                { "gn:","GitHub User Name", (o) => gitHub.OwnerName = o },
-                { "gt:","GitHub Access Token", o => gitHub.AccessToken = o },
-                { "jn:","Jira User Name", o => jira.UserName = o },
-                { "jp:","Jira Password", o => jira.Password = o },
-                { "rn:","Repository Name", o => notesBuilder.RepositoryName = o },
-                { "bn:","Branch Name", o => notesBuilder.BranchName = o },
-                { "tn:","Tag Name", o => notesBuilder.TagName = o },
-                { "tp:","Task Prefixes", o => notesBuilder.TaskPrefixes = ParseTaskPrefixes(o) },
-                { "tpn:","Template Name", o => templateBuilder.TemplateName = o }
-            };
+
+        public JiraClient Jira { get; private set; }
+        public GitHubClient GitHub { get; private set; }
+        public NoteCollector NoteCollector { get; private set; }
+        public NoteFormatter NoteFormatter { get; private set; }
+
+        public void Run()
+        {
+            var notes = NoteCollector.Collect();
+            var formattedNotes = NoteFormatter.Format(notes);
+            Console.WriteLine(formattedNotes);
+        }
+
+
+        public static int Main(string[] args)
+        {
+            var program = new Program();
+            var argumentParser = new ArgumentParser(program);
 
             try
             {
-                options.Parse(args);
-
-                string documentBody = templateBuilder.Build();
-
-                Console.WriteLine(documentBody);
-
-                Console.ReadKey();
+                argumentParser.Parse(args);
             }
-            catch (OptionException e)
+            catch (ParameterParsingException exception)
             {
-                Console.WriteLine(e.Message);
+                Console.Error.WriteLine(exception.Message);
                 Console.WriteLine("Try `--help' for more information.");
+                return 1;
             }
 
-        }
-
-        private static string[] ParseTaskPrefixes(string arg)
-        {
-            return arg.Split(',');
+            program.Run();
+            return 0;
         }
     }
 }
