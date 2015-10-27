@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arguments\HelpRequestedException.cs" />
     <Compile Include="Arguments\RequiredParameter.cs" />
     <Compile Include="Arguments\RequiredUniqueParameter.cs" />
     <Compile Include="INoteCollector.cs" />

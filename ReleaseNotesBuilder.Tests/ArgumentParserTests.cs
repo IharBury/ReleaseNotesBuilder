@@ -98,5 +98,12 @@ namespace ReleaseNotesBuilder.Tests
                 "extra"
             }));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(HelpRequestedException))]
+        public void HelpIsSupported()
+        {
+            parser.Parse(new[] { "--help" });
+        }
     }
 }

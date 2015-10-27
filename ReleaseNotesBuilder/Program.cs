@@ -44,6 +44,11 @@ namespace ReleaseNotesBuilder
                 Console.WriteLine("Try `--help' for more information.");
                 return 1;
             }
+            catch (HelpRequestedException)
+            {
+                argumentParser.WriteHelp(Console.Out);
+                return 2;
+            }
 
             program.Run();
             return 0;
