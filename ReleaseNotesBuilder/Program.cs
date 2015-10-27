@@ -4,6 +4,8 @@ using NDesk.Options;
 
 using ReleaseNotesBuilder.Builders;
 using ReleaseNotesBuilder.Builders.Notes;
+using ReleaseNotesBuilder.Providers.GitHub;
+using ReleaseNotesBuilder.Providers.Jira;
 
 namespace ReleaseNotesBuilder
 {
@@ -12,33 +14,29 @@ namespace ReleaseNotesBuilder
 
         static void Main(string[] args)
         {
-            var notesBuilderConfiguration = new NotesBuilderConfiguration();
-            var templateBuilderConfiguration = new TemplateBuilderConfiguration();
+            var jira = new Jira();
+            var gitHub = new GitHub();
+            var notesBuilder = new NotesBuilder(gitHub, jira);
+            var templateBuilder = new TemplateBuilder(notesBuilder);
 
             var options = new OptionSet
             {
-                { "gn:","GitHub User Name", (o) => notesBuilderConfiguration.GithubOwnerName = o },
-                { "gt:","GitHub Access Token", o => notesBuilderConfiguration.GithubAccessToken = o },
-                { "jn:","Jira User Name", o => notesBuilderConfiguration.JiraUsername = o },
-                { "jp:","Jira Password", o => notesBuilderConfiguration.JiraPassword = o },
-                { "rn:","Repository Name", o => templateBuilderConfiguration.RepositoryName = o },
-                { "bn:","Branch Name", o => templateBuilderConfiguration.BranchName = o },
-                { "tn:","Tag Name", o => templateBuilderConfiguration.TagName = o },
-                { "tp:","Task Prefixes", o => templateBuilderConfiguration.TaskPrefixes = ParseTaskPrefixes(o) },
-                { "tpn:","Template Name", o => templateBuilderConfiguration.TemplateName = o }
+                { "gn:","GitHub User Name", (o) => gitHub.OwnerName = o },
+                { "gt:","GitHub Access Token", o => gitHub.AccessToken = o },
+                { "jn:","Jira User Name", o => jira.UserName = o },
+                { "jp:","Jira Password", o => jira.Password = o },
+                { "rn:","Repository Name", o => notesBuilder.RepositoryName = o },
+                { "bn:","Branch Name", o => notesBuilder.BranchName = o },
+                { "tn:","Tag Name", o => notesBuilder.TagName = o },
+                { "tp:","Task Prefixes", o => notesBuilder.TaskPrefixes = ParseTaskPrefixes(o) },
+                { "tpn:","Template Name", o => templateBuilder.TemplateName = o }
             };
 
             try
             {
                 options.Parse(args);
 
-                var notesBuilder = new NotesBuilder(notesBuilderConfiguration);
-                var templateBuilder = new TemplateBuilder(notesBuilder);
-                string documentBody = templateBuilder.Build(templateBuilderConfiguration.RepositoryName,
-                    templateBuilderConfiguration.BranchName,
-                    templateBuilderConfiguration.TagName,
-                    templateBuilderConfiguration.TaskPrefixes,
-                    templateBuilderConfiguration.TemplateName);
+                string documentBody = templateBuilder.Build();
 
                 Console.WriteLine(documentBody);
 

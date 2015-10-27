@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using ReleaseNotesBuilder.Providers.GitHub.Client;
 using ReleaseNotesBuilder.Providers.GitHub.Models;
 
 using RestSharp;
+using RestSharp.Authenticators;
 
 namespace ReleaseNotesBuilder.Providers.GitHub
 {
-    public class GitHubDataProvider
+    public class GitHub
     {
-        private readonly IGitHubRestClient client;
+        public string OwnerName { get; set; }
+        public string AccessToken { get; set; }
 
-        public GitHubDataProvider(IGitHubRestClient client)
-        {
-            this.client = client;
-        }
 
         /// <summary>
         /// Finds the commits.
@@ -34,10 +32,10 @@ namespace ReleaseNotesBuilder.Providers.GitHub
 
             do
             {
-                var link = string.Format("repos/{0}/{1}/commits?sha={2}&page={3}&per_page=100", client.OwnerName, repositoryName,
+                var link = string.Format("repos/{0}/{1}/commits?sha={2}&page={3}&per_page=100", OwnerName, repositoryName,
                     branchName, page++);
 
-                response = client.GetResponse<List<CommitDataModel>>(link);
+                response = GetResponse<List<CommitDataModel>>(link);
 
                 foreach (var commit in response.Data)
                 {
@@ -61,13 +59,13 @@ namespace ReleaseNotesBuilder.Providers.GitHub
         /// <returns></returns>
         public TagDataModel FindTagByName(string repositoryName, string tagName)
         {
-            var link = string.Format("repos/{0}/{1}/git/refs/tags/{2}", client.OwnerName, repositoryName, tagName);
-            var response = client.GetResponse<TagDataModel>(link);
+            var link = string.Format("repos/{0}/{1}/git/refs/tags/{2}", OwnerName, repositoryName, tagName);
+            var response = GetResponse<TagDataModel>(link);
             var tagSHA = response.Data.SHA;
             if (!string.IsNullOrWhiteSpace(tagSHA))
             {
-                link = string.Format("repos/{0}/{1}/git/tags/{2}", client.OwnerName, repositoryName, tagSHA);
-                response = client.GetResponse<TagDataModel>(link);
+                link = string.Format("repos/{0}/{1}/git/tags/{2}", OwnerName, repositoryName, tagSHA);
+                response = GetResponse<TagDataModel>(link);
                 return response.Data;
             }
             return null;
@@ -85,7 +83,7 @@ namespace ReleaseNotesBuilder.Providers.GitHub
         public List<string> GetTaskNamesByCommitDescription(string repositoryName, string branchName, string tagName,
             Regex[] taskNameCriteria)
         {
-            var commits = FindCommits(repositoryName, branchName, tagName);
+            var commits = FindCommits(repositoryName, branchName, tagName).Where(c => c.Message != null);
 
             var taskNames = (from criteria in taskNameCriteria
                 from commit in commits
@@ -97,12 +95,24 @@ namespace ReleaseNotesBuilder.Providers.GitHub
             return taskNames;
         }
 
-
-        private static IRestResponse<T> GetResponse<T>(RestClient client, string link) where T : class, new()
+        private LinkedResponsePayload<T> GetResponse<T>(string link) where T : class, new()
         {
+            var client = new RestClient(new Uri("https://api.github.com"))
+            {
+                Authenticator = new OAuth2UriQueryParameterAuthenticator(AccessToken)
+            };
             var request = new RestRequest(link, Method.GET);
             var result = client.Execute<T>(request);
-            return result;
+            return new LinkedResponsePayload<T>
+            {
+                Data = result.Data,
+                NextPageAvailable = NextPageAvailable(result)
+            };
+        }
+
+        private static bool NextPageAvailable(IRestResponse response)
+        {
+            return response.Headers.FirstOrDefault(x => x.Name == "Link") != null;
         }
     }
 }

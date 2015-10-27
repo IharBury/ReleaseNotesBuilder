@@ -65,21 +65,15 @@
     <Compile Include="Builders\Notes\INotesBuilder.cs" />
     <Compile Include="Builders\TemplateBuilder.cs" />
     <Compile Include="Builders\Notes\NotesBuilder.cs" />
-    <Compile Include="Builders\TemplateBuilderConfiguration.cs" />
-    <Compile Include="Builders\Notes\NotesBuilderConfiguration.cs" />
     <Compile Include="Model\TemplateEngineModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\Extensions\RestClientExtensions.cs" />
-    <Compile Include="Providers\GitHub\Client\LinkedResponsePayload.cs" />
-    <Compile Include="Providers\GitHub\GitHubDataProvider.cs" />
+    <Compile Include="Providers\GitHub\Models\LinkedResponsePayload.cs" />
+    <Compile Include="Providers\GitHub\GitHub.cs" />
     <Compile Include="Providers\GitHub\Models\CommitDataModel.cs" />
     <Compile Include="Providers\GitHub\Models\TagDataModel.cs" />
-    <Compile Include="Providers\GitHub\Client\GitHubRestClient.cs" />
-    <Compile Include="Providers\GitHub\Client\IGitHubRestClient.cs" />
-    <Compile Include="Providers\Jira\Client\IJiraRestClient.cs" />
-    <Compile Include="Providers\Jira\Client\JiraRestClient.cs" />
-    <Compile Include="Providers\Jira\JiraDataProvider.cs" />
+    <Compile Include="Providers\Jira\Jira.cs" />
     <Compile Include="Providers\Jira\Models\TaskDataModel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,36 +3,35 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using ReleaseNotesBuilder.Providers.GitHub;
-using ReleaseNotesBuilder.Providers.GitHub.Client;
 using ReleaseNotesBuilder.Providers.Jira;
-using ReleaseNotesBuilder.Providers.Jira.Client;
 
 namespace ReleaseNotesBuilder.Builders.Notes
 {
     public class NotesBuilder: INotesBuilder
     {
-        private readonly NotesBuilderConfiguration notesBuilderConfiguration;
+        private readonly GitHub gitHub;
+        private readonly Jira jira;
 
-        public NotesBuilder(NotesBuilderConfiguration notesBuilderConfiguration)
+        public NotesBuilder(GitHub gitHub, Jira jira)
         {
-            this.notesBuilderConfiguration = notesBuilderConfiguration;
+            this.gitHub = gitHub;
+            this.jira = jira;
         }
 
-        public List<string> Build(string repositoryName, string branchName, string tagName, string[] taskPrefixes)
+        public string RepositoryName { get; set; }
+        public string BranchName { get; set; }
+        public string TagName { get; set; }
+        public string[] TaskPrefixes { get; set; }
+
+        public List<string> Build()
         {
-            var gitHubClient = new GitHubRestClient(notesBuilderConfiguration.GithubOwnerName, notesBuilderConfiguration.GithubAccessToken);
-            var gitHubPovider = new GitHubDataProvider(gitHubClient);
-
-            var jiraClient = new JiraRestClient(notesBuilderConfiguration.JiraUsername, notesBuilderConfiguration.JiraPassword);
-            var jiraProvider = new JiraDataProvider(jiraClient);
-
-            var taskCriteria = taskPrefixes
+            var taskCriteria = TaskPrefixes
                 .Select(x => new Regex(x + "-(\\d){1,}", RegexOptions.Multiline | RegexOptions.IgnoreCase))
                 .ToArray();
 
-            var taskNames = gitHubPovider.GetTaskNamesByCommitDescription(repositoryName, branchName, tagName, taskCriteria);
+            var taskNames = gitHub.GetTaskNamesByCommitDescription(RepositoryName, BranchName, TagName, taskCriteria);
 
-            return taskNames.Select(taskName => string.Format("{0} {1}", taskName, jiraProvider.GetTask(taskName).Summary)).ToList();
+            return taskNames.Select(taskName => string.Format("{0} {1}", taskName, jira.GetTask(taskName).Summary)).ToList();
         }
     }
 }
