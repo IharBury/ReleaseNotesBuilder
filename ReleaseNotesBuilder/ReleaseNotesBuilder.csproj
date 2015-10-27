@@ -63,15 +63,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arguments\RequiredArgument.cs" />
-    <Compile Include="Arguments\RequiredUniqueArgument.cs" />
+    <Compile Include="Arguments\RequiredParameter.cs" />
+    <Compile Include="Arguments\RequiredUniqueParameter.cs" />
     <Compile Include="INoteCollector.cs" />
     <Compile Include="IProgramConfiguration.cs" />
     <Compile Include="NoteFormatter.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="NoteCollector.cs" />
     <Compile Include="Arguments\ArgumentParser.cs" />
-    <Compile Include="Arguments\ParameterParsingException.cs" />
+    <Compile Include="Arguments\ArgumentParsingException.cs" />
     <Compile Include="Templates\ReportModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

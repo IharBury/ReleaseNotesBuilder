@@ -38,7 +38,7 @@ namespace ReleaseNotesBuilder
             {
                 argumentParser.Parse(args);
             }
-            catch (ParameterParsingException exception)
+            catch (ArgumentParsingException exception)
             {
                 Console.Error.WriteLine(exception.Message);
                 Console.WriteLine("Try `--help' for more information.");

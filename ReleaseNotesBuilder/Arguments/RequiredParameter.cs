@@ -3,13 +3,13 @@ using NDesk.Options;
 
 namespace ReleaseNotesBuilder.Arguments
 {
-    public class RequiredArgument
+    public class RequiredParameter
     {
         private readonly string prototype;
         private readonly Action<string> action;
         private bool isSupplied;
 
-        public RequiredArgument(string prototype, string description, Action<string> action)
+        public RequiredParameter(string prototype, string description, Action<string> action)
         {
             this.prototype = prototype;
             Description = description;
@@ -36,7 +36,7 @@ namespace ReleaseNotesBuilder.Arguments
         public void AssertSupplied()
         {
             if (!isSupplied)
-                throw new ParameterParsingException(string.Format("{0} parameter is missing.", Description));
+                throw new ArgumentParsingException(string.Format("{0} parameter is missing.", Description));
         }
 
         protected virtual void HandleDuplicateValue()

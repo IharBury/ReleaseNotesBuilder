@@ -11,7 +11,7 @@ namespace ReleaseNotesBuilder.Tests
     public class ArgumentParserTests
     {
         [TestMethod]
-        [ExpectedException(typeof(ParameterParsingException))]
+        [ExpectedException(typeof(ArgumentParsingException))]
         public void WhenNoParametersProvidedExceptionIsThrown()
         {
             var configurationMock = new Mock<IProgramConfiguration>();
@@ -42,7 +42,7 @@ namespace ReleaseNotesBuilder.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParameterParsingException))]
+        [ExpectedException(typeof(ArgumentParsingException))]
         public void WhenUniqueParameterIsProvidedTwiceExceptionIsThrown()
         {
             var configurationMock = new Mock<IProgramConfiguration>
@@ -116,6 +116,30 @@ namespace ReleaseNotesBuilder.Tests
 
             Assert.IsTrue(configurationMock.Object.NoteCollector.TaskPrefixes.Contains("XYZ"));
             Assert.IsTrue(configurationMock.Object.NoteCollector.TaskPrefixes.Contains("ABC"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentParsingException))]
+        public void WhenUnknownParametersProvidedExceptionIsThrown()
+        {
+            var configurationMock = new Mock<IProgramConfiguration>
+            {
+                DefaultValue = DefaultValue.Mock
+            };
+            var parser = new ArgumentParser(configurationMock.Object);
+            parser.Parse(new[]
+            {
+                "--gn=GitHubUser",
+                "--gt=GitHubToken",
+                "--jn=JiraUser",
+                "--jp=JiraPassword",
+                "--rn=Repo",
+                "--bn=Branch",
+                "--tn=Tag",
+                "--tp=XYZ",
+                "--tpn=Template",
+                "extra"
+            });
         }
     }
 }
