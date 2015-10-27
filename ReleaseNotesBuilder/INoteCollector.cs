@@ -7,7 +7,7 @@ namespace ReleaseNotesBuilder
         string RepositoryName { get; set; }
         string BranchName { get; set; }
         string TagName { get; set; }
-        string[] TaskPrefixes { get; set; }
+        ICollection<string> TaskPrefixes { get; }
         List<Note> Collect();
     }
 }

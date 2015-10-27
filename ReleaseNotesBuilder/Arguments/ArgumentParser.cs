@@ -23,7 +23,14 @@ namespace ReleaseNotesBuilder.Arguments
                 new RequiredUniqueArgument("rn=", "Repository Name", o => configuration.NoteCollector.RepositoryName = o), 
                 new RequiredUniqueArgument("bn=", "Branch Name", o => configuration.NoteCollector.BranchName = o), 
                 new RequiredUniqueArgument("tn=", "Tag Name", o => configuration.NoteCollector.TagName = o),
-                new RequiredUniqueArgument("tp=", "Task Prefixes", o => configuration.NoteCollector.TaskPrefixes = ParseTaskPrefixes(o)), 
+                new RequiredArgument(
+                    "tp=", 
+                    "Task Prefixes", 
+                    o =>
+                    {
+                        foreach (var taskPrefix in ParseTaskPrefixes(o))
+                            configuration.NoteCollector.TaskPrefixes.Add(taskPrefix);
+                    }), 
                 new RequiredUniqueArgument("tpn=", "Template Name", o => configuration.NoteFormatter.TemplateName = o)
             };
 
@@ -33,7 +40,7 @@ namespace ReleaseNotesBuilder.Arguments
 
             try
             {
-                var result = optionSet.Parse(arguments);
+                optionSet.Parse(arguments);
             }
             catch (OptionException exception)
             {

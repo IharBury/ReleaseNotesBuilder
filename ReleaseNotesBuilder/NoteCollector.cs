@@ -15,12 +15,13 @@ namespace ReleaseNotesBuilder
         {
             this.gitHub = gitHub;
             this.jira = jira;
+            TaskPrefixes = new List<string>();
         }
 
         public string RepositoryName { get; set; }
         public string BranchName { get; set; }
         public string TagName { get; set; }
-        public string[] TaskPrefixes { get; set; }
+        public ICollection<string> TaskPrefixes { get; private set; }
 
         public List<Note> Collect()
         {
