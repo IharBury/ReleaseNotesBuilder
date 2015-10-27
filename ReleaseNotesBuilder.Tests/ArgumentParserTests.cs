@@ -13,10 +13,7 @@ namespace ReleaseNotesBuilder.Tests
         [ExpectedException(typeof(ParameterParsingException))]
         public void WhenNoParametersProvidedExceptionIsThrown()
         {
-            var configurationMock = new Mock<IProgramConfiguration>
-            {
-                DefaultValue = DefaultValue.Mock
-            };
+            var configurationMock = new Mock<IProgramConfiguration>();
             var parser = new ArgumentParser(configurationMock.Object);
             parser.Parse(Enumerable.Empty<string>());
         }
@@ -32,6 +29,30 @@ namespace ReleaseNotesBuilder.Tests
             parser.Parse(new[]
             {
                 "--gn=GitHubUser",
+                "--gt=GitHubToken",
+                "--jn=JiraUser",
+                "--jp=JiraPassword",
+                "--rn=Repo",
+                "--bn=Branch",
+                "--tn=Tag",
+                "--tp=XYZ",
+                "--tpn=Template"
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ParameterParsingException))]
+        public void WhenParameterIsProvidedTwiceExceptionIsThrown()
+        {
+            var configurationMock = new Mock<IProgramConfiguration>
+            {
+                DefaultValue = DefaultValue.Mock
+            };
+            var parser = new ArgumentParser(configurationMock.Object);
+            parser.Parse(new[]
+            {
+                "--gn=GitHubUser",
+                "--gn=GitHubSuperUser",
                 "--gt=GitHubToken",
                 "--jn=JiraUser",
                 "--jp=JiraPassword",

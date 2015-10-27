@@ -63,7 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arguments\RequiredArgument.cs" />
+    <Compile Include="Arguments\RequiredUniqueArgument.cs" />
     <Compile Include="INoteCollector.cs" />
     <Compile Include="IProgramConfiguration.cs" />
     <Compile Include="NoteFormatter.cs" />

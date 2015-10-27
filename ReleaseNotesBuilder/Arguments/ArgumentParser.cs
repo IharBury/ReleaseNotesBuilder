@@ -16,15 +16,15 @@ namespace ReleaseNotesBuilder.Arguments
         {
             var requiredArguments = new[]
             {
-                new RequiredArgument("gn=", "GitHub User Name", o => configuration.GitHub.OwnerName = o),
-                new RequiredArgument("gt=", "GitHub Access Token", o => configuration.GitHub.AccessToken = o), 
-                new RequiredArgument("jn=", "Jira User Name", o => configuration.Jira.UserName = o), 
-                new RequiredArgument("jp=", "Jira Password", o => configuration.Jira.Password = o), 
-                new RequiredArgument("rn=", "Repository Name", o => configuration.NoteCollector.RepositoryName = o), 
-                new RequiredArgument("bn=", "Branch Name", o => configuration.NoteCollector.BranchName = o), 
-                new RequiredArgument("tn=", "Tag Name", o => configuration.NoteCollector.TagName = o),
-                new RequiredArgument("tp=", "Task Prefixes", o => configuration.NoteCollector.TaskPrefixes = ParseTaskPrefixes(o)), 
-                new RequiredArgument("tpn=", "Template Name", o => configuration.NoteFormatter.TemplateName = o)
+                new RequiredUniqueArgument("gn=", "GitHub User Name", o => configuration.GitHub.OwnerName = o),
+                new RequiredUniqueArgument("gt=", "GitHub Access Token", o => configuration.GitHub.AccessToken = o), 
+                new RequiredUniqueArgument("jn=", "Jira User Name", o => configuration.Jira.UserName = o), 
+                new RequiredUniqueArgument("jp=", "Jira Password", o => configuration.Jira.Password = o), 
+                new RequiredUniqueArgument("rn=", "Repository Name", o => configuration.NoteCollector.RepositoryName = o), 
+                new RequiredUniqueArgument("bn=", "Branch Name", o => configuration.NoteCollector.BranchName = o), 
+                new RequiredUniqueArgument("tn=", "Tag Name", o => configuration.NoteCollector.TagName = o),
+                new RequiredUniqueArgument("tp=", "Task Prefixes", o => configuration.NoteCollector.TaskPrefixes = ParseTaskPrefixes(o)), 
+                new RequiredUniqueArgument("tpn=", "Template Name", o => configuration.NoteFormatter.TemplateName = o)
             };
 
             var optionSet = new OptionSet();
@@ -33,7 +33,7 @@ namespace ReleaseNotesBuilder.Arguments
 
             try
             {
-                optionSet.Parse(arguments);
+                var result = optionSet.Parse(arguments);
             }
             catch (OptionException exception)
             {
