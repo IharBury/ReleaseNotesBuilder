@@ -18,7 +18,7 @@ namespace ReleaseNotesBuilder
 
         public JiraClient Jira { get; private set; }
         public GitHubClient GitHub { get; private set; }
-        public NoteCollector NoteCollector { get; private set; }
+        public INoteCollector NoteCollector { get; private set; }
         public NoteFormatter NoteFormatter { get; private set; }
 
         public void Run()

@@ -20,5 +20,27 @@ namespace ReleaseNotesBuilder.Tests
             var parser = new ArgumentParser(configurationMock.Object);
             parser.Parse(Enumerable.Empty<string>());
         }
+
+        [TestMethod]
+        public void WhenAllParametersAreProvidedExceptionIsNotThrown()
+        {
+            var configurationMock = new Mock<IProgramConfiguration>
+            {
+                DefaultValue = DefaultValue.Mock
+            };
+            var parser = new ArgumentParser(configurationMock.Object);
+            parser.Parse(new[]
+            {
+                "--gn=GitHubUser",
+                "--gt=GitHubToken",
+                "--jn=JiraUser",
+                "--jp=JiraPassword",
+                "--rn=Repo",
+                "--bn=Branch",
+                "--tn=Tag",
+                "--tp=XYZ",
+                "--tpn=Template"
+            });
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace ReleaseNotesBuilder
     {
         JiraClient Jira { get; }
         GitHubClient GitHub { get; }
-        NoteCollector NoteCollector { get; }
+        INoteCollector NoteCollector { get; }
         NoteFormatter NoteFormatter { get; }
     }
 }
