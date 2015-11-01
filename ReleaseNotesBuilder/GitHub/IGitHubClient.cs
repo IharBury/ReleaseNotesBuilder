@@ -1,14 +1,6 @@
-﻿using System.Collections.Generic;
-
 namespace ReleaseNotesBuilder.GitHub
 {
-    public interface IGitHubClient
+    public interface IGitHubClient : IGitHubNoteCollector, IGitHubConfigurer
     {
-        /// <summary>
-        /// Finds the commits.
-        /// </summary>
-        List<CommitDataModel> FindCommits();
-
-        List<string> GetTaskNamesByCommitDescription();
     }
 }

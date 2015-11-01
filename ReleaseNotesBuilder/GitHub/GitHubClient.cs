@@ -1,22 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ReleaseNotesBuilder.Formatting;
+using ReleaseNotesBuilder.Jira;
 using ReleaseNotesBuilder.TaskReferences;
 using RestSharp;
 using RestSharp.Authenticators;
 
 namespace ReleaseNotesBuilder.GitHub
 {
-    public class GitHubClient : IGitHubClient, IGitHubConfigurer
+    public class GitHubClient : IGitHubClient
     {
         private readonly ITaskReferenceExtractor taskReferenceExtractor;
+        private readonly IJiraClient jira;
+        private readonly INoteFormatter noteFormatter;
 
-        public GitHubClient(ITaskReferenceExtractor taskReferenceExtractor)
+        public GitHubClient(ITaskReferenceExtractor taskReferenceExtractor, IJiraClient jira, INoteFormatter noteFormatter)
         {
             if (taskReferenceExtractor == null)
                 throw new ArgumentNullException("taskReferenceExtractor");
+            if (jira == null)
+                throw new ArgumentNullException("jira");
+            if (noteFormatter == null)
+                throw new ArgumentNullException("noteFormatter");
 
             this.taskReferenceExtractor = taskReferenceExtractor;
+            this.jira = jira;
+            this.noteFormatter = noteFormatter;
         }
 
 
@@ -83,6 +93,20 @@ namespace ReleaseNotesBuilder.GitHub
         public List<string> GetTaskNamesByCommitDescription()
         {
             return taskReferenceExtractor.Extract(FindCommits().Select(commit => commit.Message)).ToList();
+        }
+
+        public void CollectNotes()
+        {
+            var taskNames = GetTaskNamesByCommitDescription();
+
+            var notes = taskNames
+                .Select(taskName => new Note
+                {
+                    TaskName = taskName,
+                    Summary = jira.GetTask(taskName).Summary
+                })
+                .ToList();
+            noteFormatter.Format(notes);
         }
 
         private LinkedResponsePayload<T> GetResponse<T>(string link) where T : class, new()

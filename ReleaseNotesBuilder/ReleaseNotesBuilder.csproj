@@ -68,16 +68,15 @@
     <Compile Include="Arguments\RequiredUniqueParameter.cs" />
     <Compile Include="Formatting\IRazorTemplateNoteFormatterConfigurer.cs" />
     <Compile Include="GitHub\IGitHubClient.cs" />
+    <Compile Include="GitHub\IGitHubNoteCollector.cs" />
     <Compile Include="GitHub\IGitHubConfigurer.cs" />
     <Compile Include="Formatting\INoteFormatter.cs" />
-    <Compile Include="INoteCollector.cs" />
     <Compile Include="IProgramConfigurer.cs" />
     <Compile Include="Jira\IJiraClient.cs" />
     <Compile Include="Jira\IJiraTaskProvider.cs" />
     <Compile Include="Jira\IJiraConfigurer.cs" />
     <Compile Include="Formatting\RazorTemplateNoteFormatter.cs" />
     <Compile Include="Note.cs" />
-    <Compile Include="NoteCollector.cs" />
     <Compile Include="Arguments\ArgumentParser.cs" />
     <Compile Include="Arguments\ArgumentParsingException.cs" />
     <Compile Include="Formatting\ReportModel.cs" />
