@@ -1,13 +1,10 @@
-﻿using ReleaseNotesBuilder.GitHub;
-using ReleaseNotesBuilder.Jira;
+﻿using ReleaseNotesBuilder.Formatting;
 
 namespace ReleaseNotesBuilder
 {
     public interface IProgramConfiguration
     {
-        JiraClient Jira { get; }
-        GitHubClient GitHub { get; }
-        INoteCollector NoteCollector { get; }
-        NoteFormatter NoteFormatter { get; }
+        IReleaseConfiguration Release { get; }
+        IRazorTemplateConfiguration RazorTemplate { get; }
     }
 }

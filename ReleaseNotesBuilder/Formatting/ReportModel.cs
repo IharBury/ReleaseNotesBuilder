@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ReleaseNotesBuilder.Templates
+namespace ReleaseNotesBuilder.Formatting
 {
     public class ReportModel
     {

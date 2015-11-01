@@ -14,22 +14,46 @@ namespace ReleaseNotesBuilder.Arguments
         {
             requiredArguments = new[]
             {
-                new RequiredUniqueParameter("gn=", "GitHub user name", value => configuration.GitHub.OwnerName = value),
-                new RequiredUniqueParameter("gt=", "GitHub access token", value => configuration.GitHub.AccessToken = value),
-                new RequiredUniqueParameter("jn=", "Jira user name", value => configuration.Jira.UserName = value),
-                new RequiredUniqueParameter("jp=", "Jira password", value => configuration.Jira.Password = value),
-                new RequiredUniqueParameter("rn=", "Repository name", value => configuration.NoteCollector.RepositoryName = value),
-                new RequiredUniqueParameter("bn=", "Branch name", value => configuration.NoteCollector.BranchName = value),
-                new RequiredUniqueParameter("tn=", "Tag name", value => configuration.NoteCollector.TagName = value),
+                new RequiredUniqueParameter(
+                    "gn=", 
+                    "GitHub user name", 
+                    value => configuration.Release.GitHub.OwnerName = value),
+                new RequiredUniqueParameter(
+                    "gt=", 
+                    "GitHub access token", 
+                    value => configuration.Release.GitHub.AccessToken = value),
+                new RequiredUniqueParameter(
+                    "jn=", 
+                    "Jira user name", 
+                    value => configuration.Release.Jira.UserName = value),
+                new RequiredUniqueParameter(
+                    "jp=", 
+                    "Jira password", 
+                    value => configuration.Release.Jira.Password = value),
+                new RequiredUniqueParameter(
+                    "rn=", 
+                    "Repository name", 
+                    value => configuration.Release.RepositoryName = value),
+                new RequiredUniqueParameter(
+                    "bn=", 
+                    "Branch name", 
+                    value => configuration.Release.BranchName = value),
+                new RequiredUniqueParameter(
+                    "tn=", 
+                    "Tag name", 
+                    value => configuration.Release.TagName = value),
                 new RequiredParameter(
                     "tp=",
                     "Comma-separated task prefixes (can be specified multiple times)",
                     value =>
                     {
                         foreach (var taskPrefix in ParseTaskPrefixes(value))
-                            configuration.NoteCollector.TaskPrefixes.Add(taskPrefix);
+                            configuration.Release.TaskPrefixes.Add(taskPrefix);
                     }),
-                new RequiredUniqueParameter("tpn=", "Template name", value => configuration.NoteFormatter.TemplateName = value)
+                new RequiredUniqueParameter(
+                    "tpn=",
+                    "Template name", 
+                    value => configuration.RazorTemplate.TemplateName = value)
             };
 
             optionSet = new OptionSet

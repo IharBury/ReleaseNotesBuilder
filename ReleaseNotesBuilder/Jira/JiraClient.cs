@@ -5,7 +5,7 @@ using RestSharp.Authenticators;
 
 namespace ReleaseNotesBuilder.Jira
 {
-    public class JiraClient
+    public class JiraClient : IJiraClient
     {
         public string UserName { get; set; }
         public string Password { get; set; }

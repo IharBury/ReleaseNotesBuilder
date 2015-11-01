@@ -66,14 +66,26 @@
     <Compile Include="Arguments\HelpRequestedException.cs" />
     <Compile Include="Arguments\RequiredParameter.cs" />
     <Compile Include="Arguments\RequiredUniqueParameter.cs" />
+    <Compile Include="Formatting\IRazorTemplateNoteFormatter.cs" />
+    <Compile Include="GitHub\IGitHubClient.cs" />
+    <Compile Include="GitHub\IGitHubCommitProvider.cs" />
+    <Compile Include="GitHub\IGitHubConfiguration.cs" />
+    <Compile Include="GitHub\ITaskNameExtractor.cs" />
     <Compile Include="INoteCollector.cs" />
+    <Compile Include="Formatting\INoteFormatter.cs" />
+    <Compile Include="Formatting\IRazorTemplateConfiguration.cs" />
+    <Compile Include="INoteProvider.cs" />
     <Compile Include="IProgramConfiguration.cs" />
-    <Compile Include="NoteFormatter.cs" />
+    <Compile Include="IReleaseConfiguration.cs" />
+    <Compile Include="Jira\IJiraClient.cs" />
+    <Compile Include="Jira\IJiraTaskProvider.cs" />
+    <Compile Include="Jira\IJiraConfiguration.cs" />
+    <Compile Include="Formatting\RazorTemplateNoteFormatter.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="NoteCollector.cs" />
     <Compile Include="Arguments\ArgumentParser.cs" />
     <Compile Include="Arguments\ArgumentParsingException.cs" />
-    <Compile Include="Templates\ReportModel.cs" />
+    <Compile Include="Formatting\ReportModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestClientExtensions.cs" />
@@ -87,7 +99,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Templates\main.cshtml">
+    <None Include="Formatting\Templates\main.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

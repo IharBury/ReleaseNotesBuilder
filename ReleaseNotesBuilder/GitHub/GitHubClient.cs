@@ -8,7 +8,7 @@ using RestSharp.Authenticators;
 
 namespace ReleaseNotesBuilder.GitHub
 {
-    public class GitHubClient
+    public class GitHubClient : IGitHubClient
     {
         public string OwnerName { get; set; }
         public string AccessToken { get; set; }
@@ -78,7 +78,10 @@ namespace ReleaseNotesBuilder.GitHub
         /// <param name="tagName">Name of the tag.</param>
         /// <param name="taskNameCriteria">The task name criteria.</param>
         /// <returns></returns>
-        public List<string> GetTaskNamesByCommitDescription(string repositoryName, string branchName, string tagName,
+        public List<string> GetTaskNamesByCommitDescription(
+            string repositoryName, string 
+            branchName, 
+            string tagName,
             Regex[] taskNameCriteria)
         {
             var commits = FindCommits(repositoryName, branchName, tagName).Where(c => c.Message != null);

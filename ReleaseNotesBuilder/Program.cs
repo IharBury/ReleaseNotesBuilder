@@ -1,5 +1,6 @@
 ﻿using System;
 using ReleaseNotesBuilder.Arguments;
+using ReleaseNotesBuilder.Formatting;
 using ReleaseNotesBuilder.GitHub;
 using ReleaseNotesBuilder.Jira;
 
@@ -7,31 +8,40 @@ namespace ReleaseNotesBuilder
 {
     public class Program : IProgramConfiguration
     {
-        public Program()
+        private readonly INoteCollector noteCollector;
+        private readonly IRazorTemplateNoteFormatter razorTemplateNoteFormatter;
+
+        public Program(INoteCollector noteCollector, IRazorTemplateNoteFormatter razorTemplateNoteFormatter)
         {
-            Jira = new JiraClient();
-            GitHub = new GitHubClient();
-            NoteCollector = new NoteCollector(GitHub, Jira);
-            NoteFormatter = new NoteFormatter();
+            this.noteCollector = noteCollector;
+            this.razorTemplateNoteFormatter = razorTemplateNoteFormatter;
         }
 
+        public IReleaseConfiguration Release
+        {
+            get { return noteCollector; }
+        }
 
-        public JiraClient Jira { get; private set; }
-        public GitHubClient GitHub { get; private set; }
-        public INoteCollector NoteCollector { get; private set; }
-        public NoteFormatter NoteFormatter { get; private set; }
+        public IRazorTemplateConfiguration RazorTemplate
+        {
+            get { return razorTemplateNoteFormatter; }
+        }
 
         public void Run()
         {
-            var notes = NoteCollector.Collect();
-            var formattedNotes = NoteFormatter.Format(notes);
+            var notes = noteCollector.Collect();
+            var formattedNotes = razorTemplateNoteFormatter.Format(notes);
             Console.WriteLine(formattedNotes);
         }
 
 
         public static int Main(string[] args)
         {
-            var program = new Program();
+            var gitHub = new GitHubClient();
+            var jira = new JiraClient();
+            var noteCollector = new NoteCollector(gitHub, jira);
+            var razorTemplateNoteFormatter = new RazorTemplateNoteFormatter();
+            var program = new Program(noteCollector, razorTemplateNoteFormatter);
             var argumentParser = new ArgumentParser(program);
 
             try

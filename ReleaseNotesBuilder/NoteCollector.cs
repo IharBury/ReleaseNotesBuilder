@@ -8,10 +8,10 @@ namespace ReleaseNotesBuilder
 {
     public class NoteCollector : INoteCollector
     {
-        private readonly GitHubClient gitHub;
-        private readonly JiraClient jira;
+        private readonly IGitHubClient gitHub;
+        private readonly IJiraClient jira;
 
-        public NoteCollector(GitHubClient gitHub, JiraClient jira)
+        public NoteCollector(IGitHubClient gitHub, IJiraClient jira)
         {
             this.gitHub = gitHub;
             this.jira = jira;
@@ -22,6 +22,16 @@ namespace ReleaseNotesBuilder
         public string BranchName { get; set; }
         public string TagName { get; set; }
         public ICollection<string> TaskPrefixes { get; private set; }
+
+        public IJiraConfiguration Jira
+        {
+            get { return jira; }
+        }
+
+        public IGitHubConfiguration GitHub
+        {
+            get { return gitHub; }
+        }
 
         public List<Note> Collect()
         {
