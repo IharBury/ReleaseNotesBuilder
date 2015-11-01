@@ -10,9 +10,16 @@ namespace ReleaseNotesBuilder.Formatting
 {
     public class RazorTemplateNoteFormatter : IRazorTemplateNoteFormatter
     {
+        private readonly TextWriter writer;
+
+        public RazorTemplateNoteFormatter(TextWriter writer)
+        {
+            this.writer = writer;
+        }
+
         public string TemplateName { get; set; }
 
-        public string Format(IEnumerable<Note> notes)
+        public void Format(IEnumerable<Note> notes)
         {
             var templatePath = Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory, 
@@ -32,10 +39,12 @@ namespace ReleaseNotesBuilder.Formatting
             // Use the config
             Razor.SetTemplateService(new TemplateService(config));
 
-            return Razor.Parse(templateBody, new ReportModel
+            var formattedNotes = Razor.Parse(templateBody, new ReportModel
             {
                 Notes = notes.ToList()
             });
+
+            writer.WriteLine(formattedNotes);
         }
     }
 }

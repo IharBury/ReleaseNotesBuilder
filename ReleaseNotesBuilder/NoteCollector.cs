@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ReleaseNotesBuilder.Formatting;
 using ReleaseNotesBuilder.GitHub;
 using ReleaseNotesBuilder.Jira;
 
@@ -10,11 +11,13 @@ namespace ReleaseNotesBuilder
     {
         private readonly IGitHubClient gitHub;
         private readonly IJiraClient jira;
+        private readonly INoteFormatter noteFormatter;
 
-        public NoteCollector(IGitHubClient gitHub, IJiraClient jira)
+        public NoteCollector(IGitHubClient gitHub, IJiraClient jira, INoteFormatter noteFormatter)
         {
             this.gitHub = gitHub;
             this.jira = jira;
+            this.noteFormatter = noteFormatter;
             TaskPrefixes = new List<string>();
         }
 
@@ -30,7 +33,7 @@ namespace ReleaseNotesBuilder
             get { return gitHub; }
         }
 
-        public List<Note> Collect()
+        public void Collect()
         {
             var taskCriteria = TaskPrefixes
                 .Select(x => new Regex(x + "-(\\d){1,}", RegexOptions.Multiline | RegexOptions.IgnoreCase))
@@ -38,13 +41,14 @@ namespace ReleaseNotesBuilder
 
             var taskNames = gitHub.GetTaskNamesByCommitDescription(taskCriteria);
 
-            return taskNames
+            var notes = taskNames
                 .Select(taskName => new Note
                 {
                     TaskName = taskName,
                     Summary = jira.GetTask(taskName).Summary
                 })
                 .ToList();
+            noteFormatter.Format(notes);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace ReleaseNotesBuilder
 {
     public interface INoteProvider
     {
-        List<Note> Collect();
+        void Collect();
     }
 }

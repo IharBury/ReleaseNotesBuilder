@@ -29,9 +29,7 @@ namespace ReleaseNotesBuilder
 
         public void Run()
         {
-            var notes = noteCollector.Collect();
-            var formattedNotes = razorTemplateNoteFormatter.Format(notes);
-            Console.WriteLine(formattedNotes);
+            noteCollector.Collect();
         }
 
 
@@ -39,8 +37,8 @@ namespace ReleaseNotesBuilder
         {
             var gitHub = new GitHubClient();
             var jira = new JiraClient();
-            var noteCollector = new NoteCollector(gitHub, jira);
-            var razorTemplateNoteFormatter = new RazorTemplateNoteFormatter();
+            var razorTemplateNoteFormatter = new RazorTemplateNoteFormatter(Console.Out);
+            var noteCollector = new NoteCollector(gitHub, jira, razorTemplateNoteFormatter);
             var program = new Program(noteCollector, razorTemplateNoteFormatter);
             var argumentParser = new ArgumentParser(program);
 

@@ -4,6 +4,6 @@ namespace ReleaseNotesBuilder.Formatting
 {
     public interface INoteFormatter
     {
-        string Format(IEnumerable<Note> notes);
+        void Format(IEnumerable<Note> notes);
     }
 }
