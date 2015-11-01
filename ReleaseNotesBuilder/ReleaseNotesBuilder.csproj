@@ -72,7 +72,7 @@
     <Compile Include="GitHub\IGitHubConfigurer.cs" />
     <Compile Include="Formatting\INoteFormatter.cs" />
     <Compile Include="IProgramConfigurer.cs" />
-    <Compile Include="Jira\IJiraTaskNoteProvider.cs" />
+    <Compile Include="Jira\IJiraTaskNoteCollector.cs" />
     <Compile Include="Jira\IJiraConfigurer.cs" />
     <Compile Include="Formatting\RazorTemplateNoteFormatter.cs" />
     <Compile Include="Note.cs" />

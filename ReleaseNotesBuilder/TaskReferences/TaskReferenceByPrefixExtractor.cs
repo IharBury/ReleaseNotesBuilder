@@ -9,18 +9,14 @@ namespace ReleaseNotesBuilder.TaskReferences
 {
     public class TaskReferenceByPrefixExtractor : ITaskReferenceByPrefixExtractorConfigurer, ITaskReferenceExtractor
     {
-        private readonly IJiraTaskNoteProvider jira;
-        private readonly INoteFormatter noteFormatter;
+        private readonly IJiraTaskNoteCollector jira;
 
-        public TaskReferenceByPrefixExtractor(IJiraTaskNoteProvider jira, INoteFormatter noteFormatter)
+        public TaskReferenceByPrefixExtractor(IJiraTaskNoteCollector jira)
         {
             if (jira == null)
                 throw new ArgumentNullException("jira");
-            if (noteFormatter == null)
-                throw new ArgumentNullException("noteFormatter");
 
             this.jira = jira;
-            this.noteFormatter = noteFormatter;
             TaskPrefixes = new List<string>();
         }
 
@@ -41,14 +37,7 @@ namespace ReleaseNotesBuilder.TaskReferences
                 select match.Value.Trim())
                     .Distinct()
                     .OrderBy(taskReference => taskReference);
-            var notes = taskReferences
-                .Select(taskReference => new Note
-                {
-                    TaskName = taskReference,
-                    Summary = jira.GetTask(taskReference).Summary
-                })
-                .ToList();
-            noteFormatter.Format(notes);
+            jira.CollectTaskNotes(taskReferences);
         }
     }
 }

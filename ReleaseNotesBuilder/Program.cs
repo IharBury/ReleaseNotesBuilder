@@ -36,9 +36,9 @@ namespace ReleaseNotesBuilder
 
         private static Program BuildProgram()
         {
-            var jira = new JiraClient();
             var noteFormatter = new RazorTemplateNoteFormatter(Console.Out);
-            var taskReferenceExtractor = new TaskReferenceByPrefixExtractor(jira, noteFormatter);
+            var jira = new JiraClient(noteFormatter);
+            var taskReferenceExtractor = new TaskReferenceByPrefixExtractor(jira);
             var gitHub = new GitHubClient(taskReferenceExtractor);
             return new Program(gitHub, taskReferenceExtractor, jira, noteFormatter);
         }
