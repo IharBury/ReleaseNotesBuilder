@@ -33,15 +33,15 @@ namespace ReleaseNotesBuilder.Arguments
                 new RequiredUniqueParameter(
                     "rn=", 
                     "Repository name", 
-                    value => configuration.Release.RepositoryName = value),
+                    value => configuration.Release.GitHub.RepositoryName = value),
                 new RequiredUniqueParameter(
                     "bn=", 
                     "Branch name", 
-                    value => configuration.Release.BranchName = value),
+                    value => configuration.Release.GitHub.BranchName = value),
                 new RequiredUniqueParameter(
                     "tn=", 
                     "Tag name", 
-                    value => configuration.Release.TagName = value),
+                    value => configuration.Release.GitHub.TagName = value),
                 new RequiredParameter(
                     "tp=",
                     "Comma-separated task prefixes (can be specified multiple times)",

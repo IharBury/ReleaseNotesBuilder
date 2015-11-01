@@ -18,9 +18,6 @@ namespace ReleaseNotesBuilder
             TaskPrefixes = new List<string>();
         }
 
-        public string RepositoryName { get; set; }
-        public string BranchName { get; set; }
-        public string TagName { get; set; }
         public ICollection<string> TaskPrefixes { get; private set; }
 
         public IJiraConfiguration Jira
@@ -39,7 +36,7 @@ namespace ReleaseNotesBuilder
                 .Select(x => new Regex(x + "-(\\d){1,}", RegexOptions.Multiline | RegexOptions.IgnoreCase))
                 .ToArray();
 
-            var taskNames = gitHub.GetTaskNamesByCommitDescription(RepositoryName, BranchName, TagName, taskCriteria);
+            var taskNames = gitHub.GetTaskNamesByCommitDescription(taskCriteria);
 
             return taskNames
                 .Select(taskName => new Note
