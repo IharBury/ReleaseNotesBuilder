@@ -3,6 +3,7 @@ using ReleaseNotesBuilder.Arguments;
 using ReleaseNotesBuilder.Formatting;
 using ReleaseNotesBuilder.GitHub;
 using ReleaseNotesBuilder.Jira;
+using ReleaseNotesBuilder.TaskReferences;
 
 namespace ReleaseNotesBuilder
 {
@@ -10,7 +11,11 @@ namespace ReleaseNotesBuilder
     {
         public static int Main(string[] args)
         {
-            var programConfiguration = new ProgramConfiguration();
+            var programConfiguration = new ProgramConfiguration(
+                new JiraConfiguration(),
+                new GitHubConfiguration(),
+                new TaskReferenceByPrefixExtractorConfiguration(),
+                new RazorTemplateNoteFormatterConfiguration());
             var argumentParser = new ArgumentParser(programConfiguration);
 
             try

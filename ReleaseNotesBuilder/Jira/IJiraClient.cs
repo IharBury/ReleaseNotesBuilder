@@ -1,6 +1,6 @@
 namespace ReleaseNotesBuilder.Jira
 {
-    public interface IJiraClient : IJiraConfiguration, IJiraTaskProvider
+    public interface IJiraClient : IJiraConfigurer, IJiraTaskProvider
     {
     }
 }

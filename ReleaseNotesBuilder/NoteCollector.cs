@@ -23,12 +23,12 @@ namespace ReleaseNotesBuilder
 
         public ICollection<string> TaskPrefixes { get; private set; }
 
-        public IJiraConfiguration Jira
+        public IJiraConfigurer Jira
         {
             get { return jira; }
         }
 
-        public IGitHubConfiguration GitHub
+        public IGitHubConfigurer GitHub
         {
             get { return gitHub; }
         }

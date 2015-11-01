@@ -1,6 +1,6 @@
 ﻿namespace ReleaseNotesBuilder.GitHub
 {
-    public interface IGitHubClient : IGitHubConfiguration, IGitHubCommitProvider, ITaskNameExtractor
+    public interface IGitHubClient : IGitHubConfigurer, IGitHubCommitProvider, ITaskNameExtractor
     {
     }
 }

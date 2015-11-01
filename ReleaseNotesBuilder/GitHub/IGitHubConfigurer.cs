@@ -1,6 +1,6 @@
 namespace ReleaseNotesBuilder.GitHub
 {
-    public interface IGitHubConfiguration
+    public interface IGitHubConfigurer
     {
         string OwnerName { get; set; }
         string AccessToken { get; set; }

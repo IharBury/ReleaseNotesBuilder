@@ -10,50 +10,50 @@ namespace ReleaseNotesBuilder.Arguments
         private readonly RequiredParameter[] requiredArguments;
         private readonly OptionSet optionSet;
 
-        public ArgumentParser(IProgramConfiguration configuration)
+        public ArgumentParser(IProgramConfigurer configurer)
         {
             requiredArguments = new[]
             {
                 new RequiredUniqueParameter(
                     "gn=", 
                     "GitHub user name", 
-                    value => configuration.GitHub.OwnerName = value),
+                    value => configurer.GitHub.OwnerName = value),
                 new RequiredUniqueParameter(
                     "gt=", 
                     "GitHub access token", 
-                    value => configuration.GitHub.AccessToken = value),
+                    value => configurer.GitHub.AccessToken = value),
                 new RequiredUniqueParameter(
                     "jn=", 
                     "Jira user name", 
-                    value => configuration.Jira.UserName = value),
+                    value => configurer.Jira.UserName = value),
                 new RequiredUniqueParameter(
                     "jp=", 
                     "Jira password", 
-                    value => configuration.Jira.Password = value),
+                    value => configurer.Jira.Password = value),
                 new RequiredUniqueParameter(
                     "rn=", 
                     "Repository name", 
-                    value => configuration.GitHub.RepositoryName = value),
+                    value => configurer.GitHub.RepositoryName = value),
                 new RequiredUniqueParameter(
                     "bn=", 
                     "Branch name", 
-                    value => configuration.GitHub.BranchName = value),
+                    value => configurer.GitHub.BranchName = value),
                 new RequiredUniqueParameter(
                     "tn=", 
                     "Tag name", 
-                    value => configuration.GitHub.TagName = value),
+                    value => configurer.GitHub.TagName = value),
                 new RequiredParameter(
                     "tp=",
                     "Comma-separated task prefixes (can be specified multiple times)",
                     value =>
                     {
                         foreach (var taskPrefix in ParseTaskPrefixes(value))
-                            configuration.TaskPrefixes.Add(taskPrefix);
+                            configurer.TaskReferenceExtractor.TaskPrefixes.Add(taskPrefix);
                     }),
                 new RequiredUniqueParameter(
                     "tpn=",
                     "Template name", 
-                    value => configuration.TemplateName = value)
+                    value => configurer.NoteFormatter.TemplateName = value)
             };
 
             optionSet = new OptionSet

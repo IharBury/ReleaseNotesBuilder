@@ -23,17 +23,19 @@ namespace ReleaseNotesBuilder.Tests
             "--tpn=Template"
         };
 
-        private Mock<IProgramConfiguration> configurationMock;
+        private Mock<IProgramConfigurer> configurationMock;
         private ArgumentParser parser;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            configurationMock = new Mock<IProgramConfiguration>
+            configurationMock = new Mock<IProgramConfigurer>
             {
                 DefaultValue = DefaultValue.Mock
             };
-            configurationMock.SetupGet(configuration => configuration.TaskPrefixes).Returns(new List<string>());
+            configurationMock
+                .SetupGet(configuration => configuration.TaskReferenceExtractor.TaskPrefixes)
+                .Returns(new List<string>());
             parser = new ArgumentParser(configurationMock.Object);
         }
 
@@ -68,8 +70,8 @@ namespace ReleaseNotesBuilder.Tests
                 "--tp=ABC"
             }));
 
-            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("XYZ"));
-            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("ABC"));
+            Assert.IsTrue(configurationMock.Object.TaskReferenceExtractor.TaskPrefixes.Contains("XYZ"));
+            Assert.IsTrue(configurationMock.Object.TaskReferenceExtractor.TaskPrefixes.Contains("ABC"));
         }
 
         [TestMethod]
@@ -85,8 +87,8 @@ namespace ReleaseNotesBuilder.Tests
                     "--tp=XYZ,ABC"
                 }));
 
-            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("XYZ"));
-            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("ABC"));
+            Assert.IsTrue(configurationMock.Object.TaskReferenceExtractor.TaskPrefixes.Contains("XYZ"));
+            Assert.IsTrue(configurationMock.Object.TaskReferenceExtractor.TaskPrefixes.Contains("ABC"));
         }
 
         [TestMethod]

@@ -1,6 +1,6 @@
 ﻿namespace ReleaseNotesBuilder.Jira
 {
-    public interface IJiraConfiguration
+    public interface IJiraConfigurer
     {
         string UserName { get; set; }
         string Password { get; set; }
