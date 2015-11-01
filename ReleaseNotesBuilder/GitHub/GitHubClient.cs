@@ -12,10 +12,13 @@ namespace ReleaseNotesBuilder.GitHub
     public class GitHubClient : IGitHubClient
     {
         private readonly ITaskReferenceExtractor taskReferenceExtractor;
-        private readonly IJiraClient jira;
+        private readonly IJiraTaskNoteProvider jira;
         private readonly INoteFormatter noteFormatter;
 
-        public GitHubClient(ITaskReferenceExtractor taskReferenceExtractor, IJiraClient jira, INoteFormatter noteFormatter)
+        public GitHubClient(
+            ITaskReferenceExtractor taskReferenceExtractor, 
+            IJiraTaskNoteProvider jira, 
+            INoteFormatter noteFormatter)
         {
             if (taskReferenceExtractor == null)
                 throw new ArgumentNullException("taskReferenceExtractor");
@@ -29,18 +32,27 @@ namespace ReleaseNotesBuilder.GitHub
             this.noteFormatter = noteFormatter;
         }
 
-
         public string OwnerName { get; set; }
         public string AccessToken { get; set; }
         public string RepositoryName { get; set; }
         public string BranchName { get; set; }
         public string TagName { get; set; }
 
+        public void CollectNotes()
+        {
+            var taskNames = GetTaskNamesByCommitDescription();
 
-        /// <summary>
-        /// Finds the commits.
-        /// </summary>
-        public List<CommitDataModel> FindCommits()
+            var notes = taskNames
+                .Select(taskName => new Note
+                {
+                    TaskName = taskName,
+                    Summary = jira.GetTask(taskName).Summary
+                })
+                .ToList();
+            noteFormatter.Format(notes);
+        }
+
+        private List<CommitDataModel> FindCommits()
         {
             var result = new List<CommitDataModel>();
             var page = 1;
@@ -68,10 +80,7 @@ namespace ReleaseNotesBuilder.GitHub
             return result;
         }
 
-        /// <summary>
-        /// Finds the name of the tag by.
-        /// </summary>
-        public TagDataModel FindTagByName()
+        private TagDataModel FindTagByName()
         {
             var link = string.Format("repos/{0}/{1}/git/refs/tags/{2}", OwnerName, RepositoryName, TagName);
             var response = GetResponse<TagDataModel>(link);
@@ -86,27 +95,9 @@ namespace ReleaseNotesBuilder.GitHub
 
         }
 
-        /// <summary>
-        ///     Gets the task names by commit description.
-        /// </summary>
-        /// <returns></returns>
-        public List<string> GetTaskNamesByCommitDescription()
+        private List<string> GetTaskNamesByCommitDescription()
         {
             return taskReferenceExtractor.Extract(FindCommits().Select(commit => commit.Message)).ToList();
-        }
-
-        public void CollectNotes()
-        {
-            var taskNames = GetTaskNamesByCommitDescription();
-
-            var notes = taskNames
-                .Select(taskName => new Note
-                {
-                    TaskName = taskName,
-                    Summary = jira.GetTask(taskName).Summary
-                })
-                .ToList();
-            noteFormatter.Format(notes);
         }
 
         private LinkedResponsePayload<T> GetResponse<T>(string link) where T : class, new()

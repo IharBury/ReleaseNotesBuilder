@@ -9,6 +9,40 @@ namespace ReleaseNotesBuilder
 {
     public class Program : IProgramConfigurer
     {
+        public static int Main(string[] args)
+        {
+            var program = BuildProgram();
+
+            var argumentParser = new ArgumentParser(program);
+            try
+            {
+                argumentParser.Parse(args);
+            }
+            catch (ArgumentParsingException exception)
+            {
+                Console.Error.WriteLine(exception.Message);
+                Console.WriteLine("Try `--help' for more information.");
+                return 1;
+            }
+            catch (HelpRequestedException)
+            {
+                argumentParser.WriteHelp(Console.Out);
+                return 2;
+            }
+
+            program.Run();
+            return 0;
+        }
+
+        private static Program BuildProgram()
+        {
+            var taskReferenceExtractor = new TaskReferenceByPrefixExtractor();
+            var jira = new JiraClient();
+            var noteFormatter = new RazorTemplateNoteFormatter(Console.Out);
+            var gitHub = new GitHubClient(taskReferenceExtractor, jira, noteFormatter);
+            return new Program(gitHub, taskReferenceExtractor, jira, noteFormatter);
+        }
+
         private readonly IGitHubClient gitHub;
 
         public Program(
@@ -45,35 +79,6 @@ namespace ReleaseNotesBuilder
         public void Run()
         {
             gitHub.CollectNotes();
-        }
-
-        public static int Main(string[] args)
-        {
-            var taskReferenceExtractor = new TaskReferenceByPrefixExtractor();
-            var jira = new JiraClient();
-            var noteFormatter = new RazorTemplateNoteFormatter(Console.Out);
-            var gitHub = new GitHubClient(taskReferenceExtractor, jira, noteFormatter);
-            var program = new Program(gitHub, taskReferenceExtractor, jira, noteFormatter);
-
-            var argumentParser = new ArgumentParser(program);
-            try
-            {
-                argumentParser.Parse(args);
-            }
-            catch (ArgumentParsingException exception)
-            {
-                Console.Error.WriteLine(exception.Message);
-                Console.WriteLine("Try `--help' for more information.");
-                return 1;
-            }
-            catch (HelpRequestedException)
-            {
-                argumentParser.WriteHelp(Console.Out);
-                return 2;
-            }
-
-            program.Run();
-            return 0;
         }
     }
 }

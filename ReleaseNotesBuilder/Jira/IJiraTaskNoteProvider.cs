@@ -1,6 +1,6 @@
 ﻿namespace ReleaseNotesBuilder.Jira
 {
-    public interface IJiraTaskProvider
+    public interface IJiraTaskNoteProvider
     {
         TaskDataModel GetTask(string taskName);
     }
