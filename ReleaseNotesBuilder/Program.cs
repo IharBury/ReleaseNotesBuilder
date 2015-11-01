@@ -48,9 +48,9 @@ namespace ReleaseNotesBuilder
 
         public static int Main(string[] args)
         {
-            var gitHub = new GitHubClient();
-            var jira = new JiraClient();
             var taskReferenceExtractor = new TaskReferenceByPrefixExtractor();
+            var gitHub = new GitHubClient(taskReferenceExtractor);
+            var jira = new JiraClient();
             var noteFormatter = new RazorTemplateNoteFormatter(Console.Out);
             var noteCollector = new NoteCollector(gitHub, jira, noteFormatter);
             var program = new Program(jira, gitHub, taskReferenceExtractor, noteFormatter, noteCollector);

@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-
+using ReleaseNotesBuilder.TaskReferences;
 using RestSharp;
 using RestSharp.Authenticators;
 
 namespace ReleaseNotesBuilder.GitHub
 {
-    public class GitHubClient : IGitHubClient
+    public class GitHubClient : IGitHubClient, IGitHubConfigurer
     {
+        private readonly ITaskReferenceExtractor taskReferenceExtractor;
+
+        public GitHubClient(ITaskReferenceExtractor taskReferenceExtractor)
+        {
+            if (taskReferenceExtractor == null)
+                throw new ArgumentNullException("taskReferenceExtractor");
+
+            this.taskReferenceExtractor = taskReferenceExtractor;
+        }
+
+
         public string OwnerName { get; set; }
         public string AccessToken { get; set; }
         public string RepositoryName { get; set; }
@@ -69,21 +79,10 @@ namespace ReleaseNotesBuilder.GitHub
         /// <summary>
         ///     Gets the task names by commit description.
         /// </summary>
-        /// <param name="taskNameCriteria">The task name criteria.</param>
         /// <returns></returns>
-        public List<string> GetTaskNamesByCommitDescription(Regex[] taskNameCriteria)
+        public List<string> GetTaskNamesByCommitDescription()
         {
-            var commits = FindCommits();
-
-            var taskNames = (from criteria in taskNameCriteria
-                from commit in commits
-                where commit.Message != null
-                from Match match in criteria.Matches(commit.Message)
-                select match.Value.Trim())
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-            return taskNames;
+            return taskReferenceExtractor.Extract(FindCommits().Select(commit => commit.Message)).ToList();
         }
 
         private LinkedResponsePayload<T> GetResponse<T>(string link) where T : class, new()

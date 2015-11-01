@@ -68,9 +68,7 @@
     <Compile Include="Arguments\RequiredUniqueParameter.cs" />
     <Compile Include="Formatting\IRazorTemplateNoteFormatterConfigurer.cs" />
     <Compile Include="GitHub\IGitHubClient.cs" />
-    <Compile Include="GitHub\IGitHubCommitProvider.cs" />
     <Compile Include="GitHub\IGitHubConfigurer.cs" />
-    <Compile Include="GitHub\ITaskNameExtractor.cs" />
     <Compile Include="Formatting\INoteFormatter.cs" />
     <Compile Include="INoteCollector.cs" />
     <Compile Include="IProgramConfigurer.cs" />
@@ -93,6 +91,7 @@
     <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Jira\TaskDataModel.cs" />
     <Compile Include="TaskReferences\ITaskReferenceByPrefixExtractorConfigurer.cs" />
+    <Compile Include="TaskReferences\ITaskReferenceExtractor.cs" />
     <Compile Include="TaskReferences\TaskReferenceByPrefixExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
