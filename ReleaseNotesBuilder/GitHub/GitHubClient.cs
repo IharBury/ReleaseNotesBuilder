@@ -12,24 +12,13 @@ namespace ReleaseNotesBuilder.GitHub
     public class GitHubClient : IGitHubClient
     {
         private readonly ITaskReferenceExtractor taskReferenceExtractor;
-        private readonly IJiraTaskNoteProvider jira;
-        private readonly INoteFormatter noteFormatter;
 
-        public GitHubClient(
-            ITaskReferenceExtractor taskReferenceExtractor, 
-            IJiraTaskNoteProvider jira, 
-            INoteFormatter noteFormatter)
+        public GitHubClient(ITaskReferenceExtractor taskReferenceExtractor)
         {
             if (taskReferenceExtractor == null)
                 throw new ArgumentNullException("taskReferenceExtractor");
-            if (jira == null)
-                throw new ArgumentNullException("jira");
-            if (noteFormatter == null)
-                throw new ArgumentNullException("noteFormatter");
 
             this.taskReferenceExtractor = taskReferenceExtractor;
-            this.jira = jira;
-            this.noteFormatter = noteFormatter;
         }
 
         public string OwnerName { get; set; }
@@ -40,16 +29,7 @@ namespace ReleaseNotesBuilder.GitHub
 
         public void CollectNotes()
         {
-            var taskNames = GetTaskNamesByCommitDescription();
-
-            var notes = taskNames
-                .Select(taskName => new Note
-                {
-                    TaskName = taskName,
-                    Summary = jira.GetTask(taskName).Summary
-                })
-                .ToList();
-            noteFormatter.Format(notes);
+            taskReferenceExtractor.Extract(FindCommits().Select(commit => commit.Message));
         }
 
         private List<CommitDataModel> FindCommits()
@@ -93,11 +73,6 @@ namespace ReleaseNotesBuilder.GitHub
             }
             return null;
 
-        }
-
-        private List<string> GetTaskNamesByCommitDescription()
-        {
-            return taskReferenceExtractor.Extract(FindCommits().Select(commit => commit.Message)).ToList();
         }
 
         private LinkedResponsePayload<T> GetResponse<T>(string link) where T : class, new()

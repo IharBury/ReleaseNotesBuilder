@@ -4,6 +4,6 @@ namespace ReleaseNotesBuilder.TaskReferences
 {
     public interface ITaskReferenceExtractor
     {
-        IEnumerable<string> Extract(IEnumerable<string> commitMessages);
+        void Extract(IEnumerable<string> commitMessages);
     }
 }
