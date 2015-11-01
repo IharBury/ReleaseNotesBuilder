@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace ReleaseNotesBuilder
 {
-    public interface INoteProvider
+    public interface INoteCollector
     {
         void Collect();
     }

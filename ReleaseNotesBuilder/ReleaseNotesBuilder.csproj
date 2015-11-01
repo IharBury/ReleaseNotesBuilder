@@ -67,27 +67,23 @@
     <Compile Include="Arguments\RequiredParameter.cs" />
     <Compile Include="Arguments\RequiredUniqueParameter.cs" />
     <Compile Include="Formatting\IRazorTemplateNoteFormatterConfigurer.cs" />
-    <Compile Include="Formatting\RazorTemplateNoteFormatterConfiguration.cs" />
-    <Compile Include="GitHub\GitHubConfiguration.cs" />
     <Compile Include="GitHub\IGitHubClient.cs" />
     <Compile Include="GitHub\IGitHubCommitProvider.cs" />
     <Compile Include="GitHub\IGitHubConfigurer.cs" />
     <Compile Include="GitHub\ITaskNameExtractor.cs" />
     <Compile Include="Formatting\INoteFormatter.cs" />
-    <Compile Include="INoteProvider.cs" />
+    <Compile Include="INoteCollector.cs" />
     <Compile Include="IProgramConfigurer.cs" />
     <Compile Include="Jira\IJiraClient.cs" />
     <Compile Include="Jira\IJiraTaskProvider.cs" />
     <Compile Include="Jira\IJiraConfigurer.cs" />
     <Compile Include="Formatting\RazorTemplateNoteFormatter.cs" />
-    <Compile Include="Jira\JiraConfiguration.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="NoteCollector.cs" />
     <Compile Include="Arguments\ArgumentParser.cs" />
     <Compile Include="Arguments\ArgumentParsingException.cs" />
     <Compile Include="Formatting\ReportModel.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ProgramConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestClientExtensions.cs" />
     <Compile Include="GitHub\LinkedResponsePayload.cs" />
@@ -97,7 +93,7 @@
     <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Jira\TaskDataModel.cs" />
     <Compile Include="TaskReferences\ITaskReferenceByPrefixExtractorConfigurer.cs" />
-    <Compile Include="TaskReferences\TaskReferenceByPrefixExtractorConfiguration.cs" />
+    <Compile Include="TaskReferences\TaskReferenceByPrefixExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

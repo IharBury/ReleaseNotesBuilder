@@ -2,12 +2,13 @@
 
 namespace ReleaseNotesBuilder.TaskReferences
 {
-    public class TaskReferenceByPrefixExtractorConfiguration : ITaskReferenceByPrefixExtractorConfigurer
+    public class TaskReferenceByPrefixExtractor : ITaskReferenceByPrefixExtractorConfigurer
     {
-        public TaskReferenceByPrefixExtractorConfiguration()
+        public TaskReferenceByPrefixExtractor()
         {
             TaskPrefixes = new List<string>();
         }
+
 
         public ICollection<string> TaskPrefixes { get; private set; }
     }

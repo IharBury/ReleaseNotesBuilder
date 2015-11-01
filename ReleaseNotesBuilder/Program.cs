@@ -7,17 +7,55 @@ using ReleaseNotesBuilder.TaskReferences;
 
 namespace ReleaseNotesBuilder
 {
-    public static class Program
+    public class Program : IProgramConfigurer
     {
+        private readonly INoteCollector noteCollector;
+
+        public Program(
+            IJiraConfigurer jira,
+            IGitHubConfigurer gitHub,
+            ITaskReferenceByPrefixExtractorConfigurer taskReferenceExtractor,
+            IRazorTemplateNoteFormatterConfigurer noteFormatter,
+            INoteCollector noteCollector)
+        {
+            if (jira == null)
+                throw new ArgumentNullException("jira");
+            if (gitHub == null)
+                throw new ArgumentNullException("gitHub");
+            if (taskReferenceExtractor == null)
+                throw new ArgumentNullException("taskReferenceExtractor");
+            if (noteFormatter == null)
+                throw new ArgumentNullException("noteFormatter");
+            if (noteCollector == null)
+                throw new ArgumentNullException("noteCollector");
+
+            Jira = jira;
+            GitHub = gitHub;
+            TaskReferenceExtractor = taskReferenceExtractor;
+            NoteFormatter = noteFormatter;
+            this.noteCollector = noteCollector;
+        }
+
+        public IJiraConfigurer Jira { get; private set; }
+        public IGitHubConfigurer GitHub { get; private set; }
+        public ITaskReferenceByPrefixExtractorConfigurer TaskReferenceExtractor { get; private set; }
+        public IRazorTemplateNoteFormatterConfigurer NoteFormatter { get; private set; }
+
+        public void Run()
+        {
+            noteCollector.Collect();
+        }
+
         public static int Main(string[] args)
         {
-            var programConfiguration = new ProgramConfiguration(
-                new JiraConfiguration(),
-                new GitHubConfiguration(),
-                new TaskReferenceByPrefixExtractorConfiguration(),
-                new RazorTemplateNoteFormatterConfiguration());
-            var argumentParser = new ArgumentParser(programConfiguration);
+            var gitHub = new GitHubClient();
+            var jira = new JiraClient();
+            var taskReferenceExtractor = new TaskReferenceByPrefixExtractor();
+            var noteFormatter = new RazorTemplateNoteFormatter(Console.Out);
+            var noteCollector = new NoteCollector(gitHub, jira, noteFormatter);
+            var program = new Program(jira, gitHub, taskReferenceExtractor, noteFormatter, noteCollector);
 
+            var argumentParser = new ArgumentParser(program);
             try
             {
                 argumentParser.Parse(args);
@@ -34,11 +72,7 @@ namespace ReleaseNotesBuilder
                 return 2;
             }
 
-            var gitHub = new GitHubClient();
-            var jira = new JiraClient();
-            var razorTemplateNoteFormatter = new RazorTemplateNoteFormatter(Console.Out);
-            var noteCollector = new NoteCollector(gitHub, jira, razorTemplateNoteFormatter);
-            noteCollector.Collect();
+            program.Run();
             return 0;
         }
     }
