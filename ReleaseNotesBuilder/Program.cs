@@ -6,41 +6,12 @@ using ReleaseNotesBuilder.Jira;
 
 namespace ReleaseNotesBuilder
 {
-    public class Program : IProgramConfiguration
+    public static class Program
     {
-        private readonly INoteCollector noteCollector;
-        private readonly IRazorTemplateNoteFormatter razorTemplateNoteFormatter;
-
-        public Program(INoteCollector noteCollector, IRazorTemplateNoteFormatter razorTemplateNoteFormatter)
-        {
-            this.noteCollector = noteCollector;
-            this.razorTemplateNoteFormatter = razorTemplateNoteFormatter;
-        }
-
-        public IReleaseConfiguration Release
-        {
-            get { return noteCollector; }
-        }
-
-        public IRazorTemplateConfiguration RazorTemplate
-        {
-            get { return razorTemplateNoteFormatter; }
-        }
-
-        public void Run()
-        {
-            noteCollector.Collect();
-        }
-
-
         public static int Main(string[] args)
         {
-            var gitHub = new GitHubClient();
-            var jira = new JiraClient();
-            var razorTemplateNoteFormatter = new RazorTemplateNoteFormatter(Console.Out);
-            var noteCollector = new NoteCollector(gitHub, jira, razorTemplateNoteFormatter);
-            var program = new Program(noteCollector, razorTemplateNoteFormatter);
-            var argumentParser = new ArgumentParser(program);
+            var programConfiguration = new ProgramConfiguration();
+            var argumentParser = new ArgumentParser(programConfiguration);
 
             try
             {
@@ -58,7 +29,11 @@ namespace ReleaseNotesBuilder
                 return 2;
             }
 
-            program.Run();
+            var gitHub = new GitHubClient();
+            var jira = new JiraClient();
+            var razorTemplateNoteFormatter = new RazorTemplateNoteFormatter(Console.Out);
+            var noteCollector = new NoteCollector(gitHub, jira, razorTemplateNoteFormatter);
+            noteCollector.Collect();
             return 0;
         }
     }

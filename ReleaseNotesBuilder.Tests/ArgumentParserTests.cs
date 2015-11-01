@@ -33,7 +33,7 @@ namespace ReleaseNotesBuilder.Tests
             {
                 DefaultValue = DefaultValue.Mock
             };
-            configurationMock.SetupGet(configuration => configuration.Release.TaskPrefixes).Returns(new List<string>());
+            configurationMock.SetupGet(configuration => configuration.TaskPrefixes).Returns(new List<string>());
             parser = new ArgumentParser(configurationMock.Object);
         }
 
@@ -68,8 +68,8 @@ namespace ReleaseNotesBuilder.Tests
                 "--tp=ABC"
             }));
 
-            Assert.IsTrue(configurationMock.Object.Release.TaskPrefixes.Contains("XYZ"));
-            Assert.IsTrue(configurationMock.Object.Release.TaskPrefixes.Contains("ABC"));
+            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("XYZ"));
+            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("ABC"));
         }
 
         [TestMethod]
@@ -85,8 +85,8 @@ namespace ReleaseNotesBuilder.Tests
                     "--tp=XYZ,ABC"
                 }));
 
-            Assert.IsTrue(configurationMock.Object.Release.TaskPrefixes.Contains("XYZ"));
-            Assert.IsTrue(configurationMock.Object.Release.TaskPrefixes.Contains("ABC"));
+            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("XYZ"));
+            Assert.IsTrue(configurationMock.Object.TaskPrefixes.Contains("ABC"));
         }
 
         [TestMethod]

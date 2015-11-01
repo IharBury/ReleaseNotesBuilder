@@ -17,43 +17,43 @@ namespace ReleaseNotesBuilder.Arguments
                 new RequiredUniqueParameter(
                     "gn=", 
                     "GitHub user name", 
-                    value => configuration.Release.GitHub.OwnerName = value),
+                    value => configuration.GitHub.OwnerName = value),
                 new RequiredUniqueParameter(
                     "gt=", 
                     "GitHub access token", 
-                    value => configuration.Release.GitHub.AccessToken = value),
+                    value => configuration.GitHub.AccessToken = value),
                 new RequiredUniqueParameter(
                     "jn=", 
                     "Jira user name", 
-                    value => configuration.Release.Jira.UserName = value),
+                    value => configuration.Jira.UserName = value),
                 new RequiredUniqueParameter(
                     "jp=", 
                     "Jira password", 
-                    value => configuration.Release.Jira.Password = value),
+                    value => configuration.Jira.Password = value),
                 new RequiredUniqueParameter(
                     "rn=", 
                     "Repository name", 
-                    value => configuration.Release.GitHub.RepositoryName = value),
+                    value => configuration.GitHub.RepositoryName = value),
                 new RequiredUniqueParameter(
                     "bn=", 
                     "Branch name", 
-                    value => configuration.Release.GitHub.BranchName = value),
+                    value => configuration.GitHub.BranchName = value),
                 new RequiredUniqueParameter(
                     "tn=", 
                     "Tag name", 
-                    value => configuration.Release.GitHub.TagName = value),
+                    value => configuration.GitHub.TagName = value),
                 new RequiredParameter(
                     "tp=",
                     "Comma-separated task prefixes (can be specified multiple times)",
                     value =>
                     {
                         foreach (var taskPrefix in ParseTaskPrefixes(value))
-                            configuration.Release.TaskPrefixes.Add(taskPrefix);
+                            configuration.TaskPrefixes.Add(taskPrefix);
                     }),
                 new RequiredUniqueParameter(
                     "tpn=",
                     "Template name", 
-                    value => configuration.RazorTemplate.TemplateName = value)
+                    value => configuration.TemplateName = value)
             };
 
             optionSet = new OptionSet

@@ -8,7 +8,7 @@ using RazorEngine.Templating;
 
 namespace ReleaseNotesBuilder.Formatting
 {
-    public class RazorTemplateNoteFormatter : IRazorTemplateNoteFormatter
+    public class RazorTemplateNoteFormatter : INoteFormatter
     {
         private readonly TextWriter writer;
 

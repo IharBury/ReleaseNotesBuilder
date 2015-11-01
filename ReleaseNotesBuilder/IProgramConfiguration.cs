@@ -1,10 +1,15 @@
-﻿using ReleaseNotesBuilder.Formatting;
+﻿using System.Collections.Generic;
+using ReleaseNotesBuilder.Formatting;
+using ReleaseNotesBuilder.GitHub;
+using ReleaseNotesBuilder.Jira;
 
 namespace ReleaseNotesBuilder
 {
     public interface IProgramConfiguration
     {
-        IReleaseConfiguration Release { get; }
-        IRazorTemplateConfiguration RazorTemplate { get; }
+        IJiraConfiguration Jira { get; }
+        IGitHubConfiguration GitHub { get; }
+        ICollection<string> TaskPrefixes { get; }
+        string TemplateName { get; set; }
     }
 }

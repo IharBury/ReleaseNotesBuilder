@@ -7,7 +7,7 @@ using ReleaseNotesBuilder.Jira;
 
 namespace ReleaseNotesBuilder
 {
-    public class NoteCollector : INoteCollector
+    public class NoteCollector : INoteProvider
     {
         private readonly IGitHubClient gitHub;
         private readonly IJiraClient jira;
