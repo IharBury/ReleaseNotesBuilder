@@ -1,39 +1,19 @@
 ﻿using System;
 using ReleaseNotesBuilder.Arguments;
+using ReleaseNotesBuilder.Formatting;
 using ReleaseNotesBuilder.GitHub;
 using ReleaseNotesBuilder.Jira;
+using ReleaseNotesBuilder.TaskReferences;
 
 namespace ReleaseNotesBuilder
 {
-    public class Program : IProgramConfiguration
+    public class Program : IProgramConfigurer
     {
-        public Program()
-        {
-            Jira = new JiraClient();
-            GitHub = new GitHubClient();
-            NoteCollector = new NoteCollector(GitHub, Jira);
-            NoteFormatter = new NoteFormatter();
-        }
-
-
-        public JiraClient Jira { get; private set; }
-        public GitHubClient GitHub { get; private set; }
-        public INoteCollector NoteCollector { get; private set; }
-        public NoteFormatter NoteFormatter { get; private set; }
-
-        public void Run()
-        {
-            var notes = NoteCollector.Collect();
-            var formattedNotes = NoteFormatter.Format(notes);
-            Console.WriteLine(formattedNotes);
-        }
-
-
         public static int Main(string[] args)
         {
-            var program = new Program();
-            var argumentParser = new ArgumentParser(program);
+            var program = BuildProgram();
 
+            var argumentParser = new ArgumentParser(program);
             try
             {
                 argumentParser.Parse(args);
@@ -52,6 +32,53 @@ namespace ReleaseNotesBuilder
 
             program.Run();
             return 0;
+        }
+
+        private static Program BuildProgram()
+        {
+            var noteFormatter = new RazorTemplateNoteFormatter(Console.Out);
+            var jira = new JiraClient(noteFormatter);
+            var taskReferenceExtractor = new TaskReferenceByPrefixExtractor(jira);
+            var gitHub = new GitHubClient(taskReferenceExtractor);
+            return new Program(gitHub, taskReferenceExtractor, jira, noteFormatter);
+        }
+
+        private readonly IGitHubClient gitHub;
+
+        public Program(
+            IGitHubClient gitHub, 
+            ITaskReferenceByPrefixExtractorConfigurer taskReferenceExtractor, 
+            IJiraConfigurer jira, 
+            IRazorTemplateNoteFormatterConfigurer noteFormatter)
+        {
+            if (jira == null)
+                throw new ArgumentNullException("jira");
+            if (gitHub == null)
+                throw new ArgumentNullException("gitHub");
+            if (taskReferenceExtractor == null)
+                throw new ArgumentNullException("taskReferenceExtractor");
+            if (noteFormatter == null)
+                throw new ArgumentNullException("noteFormatter");
+
+            this.gitHub = gitHub;
+            TaskReferenceExtractor = taskReferenceExtractor;
+            Jira = jira;
+            NoteFormatter = noteFormatter;
+        }
+
+        public IJiraConfigurer Jira { get; private set; }
+
+        public IGitHubConfigurer GitHub
+        {
+            get { return gitHub; }
+        }
+
+        public ITaskReferenceByPrefixExtractorConfigurer TaskReferenceExtractor { get; private set; }
+        public IRazorTemplateNoteFormatterConfigurer NoteFormatter { get; private set; }
+
+        public void Run()
+        {
+            gitHub.CollectNotes();
         }
     }
 }

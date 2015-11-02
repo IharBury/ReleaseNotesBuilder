@@ -5,17 +5,26 @@ using System.Linq;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
-using ReleaseNotesBuilder.Templates;
 
-namespace ReleaseNotesBuilder
+namespace ReleaseNotesBuilder.Formatting
 {
-    public class NoteFormatter
+    public class RazorTemplateNoteFormatter : INoteFormatter, IRazorTemplateNoteFormatterConfigurer
     {
+        private readonly TextWriter writer;
+
+        public RazorTemplateNoteFormatter(TextWriter writer)
+        {
+            this.writer = writer;
+        }
+
         public string TemplateName { get; set; }
 
-        public string Format(IEnumerable<Note> notes)
+        public void Format(IEnumerable<Note> notes)
         {
-            var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates",
+            var templatePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory, 
+                "Formatting", 
+                "Templates",
                 string.Format("{0}.cshtml", TemplateName));
             var templateBody = File.ReadAllText(templatePath);
 
@@ -30,10 +39,12 @@ namespace ReleaseNotesBuilder
             // Use the config
             Razor.SetTemplateService(new TemplateService(config));
 
-            return Razor.Parse(templateBody, new ReportModel
+            var formattedNotes = Razor.Parse(templateBody, new ReportModel
             {
                 Notes = notes.ToList()
             });
+
+            writer.WriteLine(formattedNotes);
         }
     }
 }
